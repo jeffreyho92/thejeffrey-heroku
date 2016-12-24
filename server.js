@@ -3,11 +3,7 @@ var moment = require('moment')
 var app = express()
 
 app.use(express.static(__dirname + '/public'));
-/*
-app.get('/', function(req, res){
-    res.send('Hello World')
-})
-*/
+
 app.get('/:value', function(req, res){
     var value = req.params.value
     var object = {}
@@ -29,6 +25,6 @@ app.get('/:value', function(req, res){
     res.json(object)
 })
 
-app.listen(8080, function(){
-    console.log('start listen in 8080')
+app.listen(process.env.PORT || 8080, function(){
+    console.log('start listen in ', process.env.PORT)
 })
