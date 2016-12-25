@@ -5,7 +5,8 @@ var app = express()
 
 var database
 var MongoClient = mongodb.MongoClient
-var url = 'mongodb://localhost:27017/short_url'
+//var url = 'mongodb://localhost:27017/short_url'
+var url = 'mongodb://heroku_3lhb9g5f:q2sb27qtg09gnvctjjgsr31br8@ds145148.mlab.com:45148/heroku_3lhb9g5f'
 MongoClient.connect(url, function (err, db) {
   if (err) {
     console.log('Unable to connect to the mongoDB server. Error:', err);
