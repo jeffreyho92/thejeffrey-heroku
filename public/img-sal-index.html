@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <h1>API Basejump: Image Search Abstraction Layer</h1>
+        <p>
+            <h2>User stories:</h2>
+            1) I can get the image URLs, alt text and page urls for a set of images relating to a given search string.
+            </br>
+            2) I can paginate through the responses by adding a ?offset=2 parameter to the URL.
+            </br>
+            3) I can get a list of the most recently submitted search strings.
+        </p>
+        <p>
+            <h2>Example query usage:</h2>
+            https://nodejs-jeffreyho92.c9users.io/api/img-sal/funny?offset=2
+            </br>
+            https://nodejs-jeffreyho92.c9users.io/api/img-sal/latest
+        </p>
+        <p>
+            <h2>Example query output:</h2>
+            [{ </br>
+              "url": "https://i.ytimg.com/vi/tRzXptpC3_U/hqdefault.jpg", </br>
+              "snippet": "funny lolcats and loldogs", </br>
+              "thumbnail": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcS_dKvb6pMA0bod00g0v1Bk3YakSY7H4HYwpu268AqUK8pPiSdlUh9pEnYh", </br>
+              "context": "https://www.youtube.com/watch?v=tRzXptpC3_U" </br>
+            }, { </br>
+              "url": "http://data.whicdn.com/images/29044507/large.jpg", </br>
+              "snippet": "Most popular tags for this", </br>
+              "thumbnail": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRre4NmoJmEOVxSi1VNAumtmb6nuuTpYrLlCPGuOwXXF-R34ngusPjC144", </br>
+              "context": "http://weheartit.com/entry/group/1764108" </br>
+            }]
+        </p>
+        <p>
+            <h2>Example latest output:</h2>
+            [{ </br>
+              "term": "funny", </br>
+              "when": "12/26/2016, 9:41:22 AM" </br>
+            }, { </br>
+              "term": "lolcats funny", </br>
+              "when": "12/26/2016, 9:31:22 AM" </br>
+            }]
+        </p>
+    </body>
+</html>

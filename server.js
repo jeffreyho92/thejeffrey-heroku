@@ -22,6 +22,8 @@ app.get('/', function(req, res) {
     res.sendFile(__dirname + '/public/index.html')
 })
 
+// API Basejump: Timestamp microservice
+
 app.get('/api/timestamp', function(req, res) {
     res.sendFile(__dirname + '/public/timestamp-index.html')
 })
@@ -47,6 +49,8 @@ app.get('/api/timestamp/:value', function(req, res){
     res.json(object)
 })
 
+// API Basejump: Request Header Parser Microservice
+
 app.get('/api/whoami', function(req, res){
     var ip = req.headers['x-forwarded-for'] || 
     req.connection.remoteAddress || 
@@ -59,6 +63,8 @@ app.get('/api/whoami', function(req, res){
         }
     res.send(info)
 })
+
+// API Basejump: URL Shortener Microservice
 
 app.get('/api/short_url', function(req, res) {
     res.sendFile(__dirname + '/public/short_url-index.html')
@@ -116,6 +122,90 @@ app.get('/api/short_url/new/:url*', function(req, res) {
             "error": "No short url found for given input"
         }
         res.send(urlObj)
+    }
+})
+
+app.get('/api/img-sal', function(req, res) {
+    res.sendFile(__dirname + '/public/img-sal-index.html')
+})
+
+app.get('/api/img-sal/latest', function(req, res) {
+    // Check to see if the site is already there
+    database.collection('img-sal-history').find().toArray(function(err, docs) {
+    //console.log(err, docs);
+});
+    var coll_history = database.collection('img-sal-history')
+    coll_history.find({}, null, {
+      "limit": 5,
+      "sort": {
+        "when": -1
+      }
+    }, function(err, history) {
+      if (err) return console.error(err)
+      //console.log(history);
+      /*res.send(history.map(function(arg) {
+        // Displays only the field we need to show.
+        return {
+          term: arg.term,
+          when: arg.when
+        };
+      }));*/
+        
+        history.toArray(function(err, docs) {
+            if (err) return console.error(err)
+            res.send(Object.keys(docs).map(function(index) {
+                return {
+                    "term": docs[index].term,
+                    "when": docs[index].when
+                }
+            }))
+        })
+    });
+})
+
+app.get('/api/img-sal/:query', function(req, res) {
+    // Get images and save query and date.
+    var query = req.params.query
+    var size = req.query.offset || 2
+    var history = {
+      "term": query,
+      "when": new Date().toLocaleString()
+    }
+    
+    // Query the image and populate results
+    var req_url = `https://api.cognitive.microsoft.com/bing/v5.0/images/search?q=${query}&offset=${size}&count=5`
+    var request = require('request');
+    request({
+        method: 'GET',
+        url: req_url,
+        headers: {
+            'Ocp-Apim-Subscription-Key': 'f70eff2ee8c44c4fbd828baafc624f47'
+        }
+    }, function (error, response, body) {
+        if (error) throw error;
+        if (!error && response.statusCode == 200) {
+            var object = JSON.parse(body)
+            object = object.value
+            res.send(Object.keys(object).map(function(index) {
+                   return {
+                        "url": object[index].contentUrl,
+                        "title": object[index].name,
+                        "thumbnail": object[index].thumbnailUrl,
+                        "context": object[index].hostPageUrl
+                    }
+                })
+            )
+        }
+    })
+    
+    // Save query and time to the database
+    if (query !== 'favicon.ico') {
+        // Save object into db.
+        var coll_history = database.collection('img-sal-history')
+        coll_history.save(history, function(err, result) {
+            if (err) throw err
+            console.log('Saved ' + result)
+        })
     }
 })
 
